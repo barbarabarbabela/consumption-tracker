@@ -9,6 +9,8 @@ router.post("/upload", controller.createImage);
 
 router.patch("/confirm", controller.confirmMeasure);
 
+router.get("/:customer_code/list", controller.getMeasuresByCustomerCode);
+
 router.get("/test", async (req, res) => {
   try {
     const measureRepository = AppDataSource.getRepository(Measure);

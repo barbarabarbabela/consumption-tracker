@@ -22,11 +22,11 @@ export const createImage = async (data: CreateImage) => {
   const measure = new Measure();
   measure.measure_uuid = uuidv4();
   measure.customer_code = customer_code;
-  measure.image_url = convertBase64ToImageUrl(image);
   measure.measure_value = convertMeasureToInteger;
   measure.measure_datetime = measure_datetime;
   measure.measure_type = measure_type;
   measure.has_confirmed = false;
+  measure.image_url = convertBase64ToImageUrl(image);
 
   try {
     await measureRepository.save(measure);
@@ -58,7 +58,31 @@ export const confirmMeasure = async (
   }
 };
 
+export const getMeasuresByCustomerCode = async (
+  customer_code: string,
+  measure_type?: string
+) => {
+  const queryBuilder = measureRepository
+    .createQueryBuilder("measure")
+    .where("measure.customer_code = :customer_code", { customer_code });
+
+  // Verifica se o parâmetro measure_type foi fornecido e se é válido
+  if (measure_type) {
+    const type = (measure_type as string).toUpperCase();
+    if (!["WATER", "GAS"].includes(type)) {
+      throw new Error("Invalid measure type");
+    }
+    queryBuilder.andWhere("measure.measure_type = :measure_type", {
+      measure_type: type,
+    });
+  }
+
+  // Executa a consulta e retorna todas as medições encontradas
+  return await queryBuilder.getMany();
+};
+
 export const service = {
   createImage,
   confirmMeasure,
+  getMeasuresByCustomerCode,
 };
