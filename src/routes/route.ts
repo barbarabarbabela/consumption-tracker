@@ -7,6 +7,8 @@ const router = Router();
 
 router.post("/upload", controller.createImage);
 
+router.patch("/confirm", controller.confirmMeasure);
+
 router.get("/test", async (req, res) => {
   try {
     const measureRepository = AppDataSource.getRepository(Measure);

@@ -39,6 +39,26 @@ export const createImage = async (data: CreateImage) => {
   }
 };
 
+export const confirmMeasure = async (
+  measure_uuid: string,
+  confirmed_value: number
+) => {
+  const measure = await measureRepository.findOne({
+    where: { measure_uuid },
+  });
+
+  if (measure) {
+    measure.has_confirmed = true;
+    measure.measure_value = confirmed_value;
+    await measureRepository.save(measure);
+
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export const service = {
   createImage,
+  confirmMeasure,
 };
