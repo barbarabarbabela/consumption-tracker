@@ -3,9 +3,11 @@ import { convertBase64ToImageUrl } from "../utils/convert-base-64-to-url";
 import { getMimeTypeFromBase64 } from "../utils/get-mime-type-from-base-64";
 import { sendPromptToGemini } from "./gemini-service";
 import { v4 as uuidv4 } from "uuid";
+import { Measure } from "../entity/measure.entity";
+import { measureRepository } from "../repository/measure.repository";
 
 export const createImage = async (data: CreateImage) => {
-  const { image } = data;
+  const { image, customer_code, measure_datetime, measure_type } = data;
 
   const mimeType = getMimeTypeFromBase64(image);
 
@@ -17,11 +19,24 @@ export const createImage = async (data: CreateImage) => {
     );
   }
 
-  return {
-    image_url: convertBase64ToImageUrl(image),
-    measure_value: convertMeasureToInteger,
-    measure_uuid: uuidv4(),
-  };
+  const measure = new Measure();
+  measure.measure_uuid = uuidv4();
+  measure.customer_code = customer_code;
+  measure.image_url = convertBase64ToImageUrl(image);
+  measure.measure_value = convertMeasureToInteger;
+  measure.measure_datetime = measure_datetime;
+  measure.measure_type = measure_type;
+  measure.has_confirmed = false;
+
+  try {
+    await measureRepository.save(measure);
+    console.log("Measure saved successfully:", measure);
+
+    return measure;
+  } catch (error) {
+    console.error("Error saving measure:", error);
+    throw new Error("Failed to save measure");
+  }
 };
 
 export const service = {

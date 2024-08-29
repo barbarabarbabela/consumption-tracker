@@ -15,10 +15,11 @@ services:
     container_name: postgres
     image: postgres
     ports:
-      - "5433:${POSTGRES_PORT}"
+      - "5432:${POSTGRES_PORT}"
     volumes:
       - data:/data/db
     environment:
+      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_NAME}
 

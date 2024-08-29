@@ -1,6 +1,6 @@
 import express from "express";
 import router from "./routes/route";
-const mongoose = require("mongoose");
+import { AppDataSource } from "./data-source";
 
 require("dotenv").config();
 
@@ -10,15 +10,13 @@ const port = 3000;
 app.use(express.json());
 app.use(router);
 
-const url = process.env.DB_URL;
-
-try {
-  mongoose.connect(url);
-  console.log("DB is connected");
-} catch (error) {
-  console.error("Erro ao conectar ao MongoDB:", error);
-}
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Data Source has been initialized!");
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Error during Data Source initialization:", error);
+  });
