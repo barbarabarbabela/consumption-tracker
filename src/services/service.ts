@@ -3,7 +3,7 @@ import { convertBase64ToImageUrl } from "../utils/convert-base-64-to-url";
 import { getMimeTypeFromBase64 } from "../utils/get-mime-type-from-base-64";
 import { sendPromptToGemini } from "./gemini-service";
 import { v4 as uuidv4 } from "uuid";
-import { Measure } from "../entity/measure.entity";
+import { Measures } from "../entity/measure.entity";
 import { measureRepository } from "../repository/measure.repository";
 
 export const createImage = async (data: CreateImage) => {
@@ -19,7 +19,7 @@ export const createImage = async (data: CreateImage) => {
     );
   }
 
-  const measure = new Measure();
+  const measure = new Measures();
   measure.measure_uuid = uuidv4();
   measure.customer_code = customer_code;
   measure.measure_value = convertMeasureToInteger;
@@ -30,7 +30,6 @@ export const createImage = async (data: CreateImage) => {
 
   try {
     await measureRepository.save(measure);
-    console.log("Measure saved successfully:", measure);
 
     return measure;
   } catch (error) {
@@ -77,7 +76,6 @@ export const getMeasuresByCustomerCode = async (
     });
   }
 
-  // Executa a consulta e retorna todas as medições encontradas
   return await queryBuilder.getMany();
 };
 

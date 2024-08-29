@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { controller } from "../controllers/controller";
 import { AppDataSource } from "../data-source";
-import { Measure } from "../entity/measure.entity";
+import { Measures } from "../entity/measure.entity";
 
 const router = Router();
 
@@ -13,7 +13,7 @@ router.get("/:customer_code/list", controller.getMeasuresByCustomerCode);
 
 router.get("/test", async (req, res) => {
   try {
-    const measureRepository = AppDataSource.getRepository(Measure);
+    const measureRepository = AppDataSource.getRepository(Measures);
     const measures = await measureRepository.find();
     res.status(200).json(measures);
   } catch (error) {

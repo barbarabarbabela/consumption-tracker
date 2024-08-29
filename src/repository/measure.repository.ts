@@ -1,4 +1,4 @@
 import { AppDataSource } from "../data-source";
-import { Measure } from "../entity/measure.entity";
+import { Measures } from "../entity/measure.entity";
 
-export const measureRepository = AppDataSource.getRepository(Measure);
+export const measureRepository = AppDataSource.getRepository(Measures);

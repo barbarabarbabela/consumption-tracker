@@ -1,25 +1,25 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity({ name: "measures" })
-export class Measure {
+@Entity({ schema: "public", name: "measures" })
+export class Measures {
   @PrimaryGeneratedColumn("uuid")
   measure_uuid: string;
 
   @Column()
   customer_code: string;
 
-  @Column({ nullable: true })
+  @Column()
   image_url: string;
 
-  @Column({ type: "integer", nullable: true })
+  @Column("decimal")
   measure_value: number;
 
-  @Column({ type: "timestamp" })
+  @Column("timestamp")
   measure_datetime: Date;
 
-  @Column({ type: "varchar", length: 10 })
-  measure_type: "WATER" | "GAS";
+  @Column()
+  measure_type: string;
 
-  @Column({ default: false })
+  @Column("boolean")
   has_confirmed: boolean;
 }
