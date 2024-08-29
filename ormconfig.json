@@ -1,10 +1,10 @@
 {
   "type": "postgres",
-  "host": "${POSTGRES_HOST}",
+  "host": "localhost",
   "port": "${POSTGRES_PORT}",
   "username": "${POSTGRES_USER}",
   "password": "${POSTGRES_PASSWORD}",
   "database": "${POSTGRES_NAME}",
   "entities": ["src/entity/*.ts"],
-  "synchronize": true
+  "synchronize": false
 }
