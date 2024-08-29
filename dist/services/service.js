@@ -9,29 +9,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.service = exports.checkExistingReading = exports.createImage = void 0;
-const gemini_service_1 = require("./gemini-service"); // Ajuste conforme a localização real do serviço
+exports.service = exports.createImage = void 0;
+const convert_base_64_to_url_1 = require("../utils/convert-base-64-to-url");
+const get_mime_type_from_base_64_1 = require("../utils/get-mime-type-from-base-64");
+const gemini_service_1 = require("./gemini-service");
+const uuid_1 = require("uuid");
 const createImage = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { image, customer_code, measure_datetime, measure_type } = data;
-    const measure_value = yield (0, gemini_service_1.sendPromptToGemini)(image, "image/jpeg");
-    // Aqui você pode salvar a imagem em algum serviço de armazenamento e obter a URL
-    const image_url = "URL_da_imagem_armazenada"; // Implemente isso conforme sua lógica
-    const measure_uuid = "UUID_gerado"; // Gere um UUID único para a medida
+    const { image } = data;
+    const mimeType = (0, get_mime_type_from_base_64_1.getMimeTypeFromBase64)(image);
+    const measureValue = yield (0, gemini_service_1.sendPromptToGemini)(image, mimeType);
+    const convertMeasureToInteger = parseInt(measureValue);
+    if (isNaN(convertMeasureToInteger)) {
+        throw new Error("Não foi possível converter o valor da medida para um número inteiro");
+    }
     return {
-        image_url,
-        measure_value,
-        measure_uuid,
+        image_url: (0, convert_base_64_to_url_1.convertBase64ToImageUrl)(image),
+        measure_value: convertMeasureToInteger,
+        measure_uuid: (0, uuid_1.v4)(),
     };
 });
 exports.createImage = createImage;
-// Função para verificar se já existe uma leitura para o tipo e mês atual
-const checkExistingReading = (customer_code, measure_type, measure_datetime) => __awaiter(void 0, void 0, void 0, function* () {
-    // Implementar a lógica para verificar se existe uma leitura para o tipo e mês atual
-    // Retornar true se já existir, ou false caso contrário
-    return false;
-});
-exports.checkExistingReading = checkExistingReading;
 exports.service = {
     createImage: exports.createImage,
-    checkExistingReading: exports.checkExistingReading,
 };

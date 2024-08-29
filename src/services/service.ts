@@ -11,6 +11,11 @@ export const createImage = async (data: CreateImage) => {
 
   const measureValue = await sendPromptToGemini(image, mimeType);
   const convertMeasureToInteger = parseInt(measureValue);
+  if (isNaN(convertMeasureToInteger)) {
+    throw new Error(
+      "Não foi possível converter o valor da medida para um número inteiro"
+    );
+  }
 
   return {
     image_url: convertBase64ToImageUrl(image),

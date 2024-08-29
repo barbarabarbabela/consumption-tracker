@@ -11,26 +11,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendPromptToGemini = sendPromptToGemini;
 const generative_ai_1 = require("@google/generative-ai");
-const fs = require("fs");
 require("dotenv").config();
 const genAI = new generative_ai_1.GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-function fileToGenerativePart(path, mimeType) {
+function createGenerativePart(data, mimeType) {
     return {
         inlineData: {
-            data: Buffer.from(fs.readFileSync(path)).toString("base64"),
+            data,
             mimeType,
         },
     };
 }
-function sendPromptToGemini(path, mimeType) {
+function sendPromptToGemini(data, mimeType) {
     return __awaiter(this, void 0, void 0, function* () {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const prompt = "Describe what is in the picture.";
-        const imagePart = fileToGenerativePart(path, mimeType);
-        console.log("passou", imagePart);
+        const prompt = "Descreva apenas os números que aparecem na imagem como se fosse uma leitura de água ou gás";
+        const imagePart = createGenerativePart(data, mimeType);
         const result = yield model.generateContent([prompt, imagePart]);
         const response = result.response;
         const text = response.text();
-        console.log(text);
+        return text;
     });
 }
