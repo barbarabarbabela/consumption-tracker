@@ -1,8 +1,17 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { service } from "../services/service";
 import { CreateImage } from "../interfaces/create-image.interface";
+import InvalidData from "../errors/invalid-data";
+import NotFound from "../errors/not-found";
+import InvalidType from "../errors/invalid-type";
+import { ConfirmMeasure } from "../interfaces/confirm-measure";
+import { validate as uuidValidate } from "uuid";
 
-const createImage = async (req: Request, res: Response) => {
+const createImage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
   try {
     const body: CreateImage = req.body;
 
@@ -12,11 +21,7 @@ const createImage = async (req: Request, res: Response) => {
       !body.measure_datetime ||
       !body.measure_type
     ) {
-      return res.status(400).json({
-        error_code: "INVALID_DATA",
-        error_description:
-          "Dados fornecidos no corpo da requisição são inválidos.",
-      });
+      throw new InvalidData();
     }
 
     const result = await service.createImage(body);
@@ -27,61 +32,62 @@ const createImage = async (req: Request, res: Response) => {
       measure_uuid: result.measure_uuid,
     });
   } catch (error) {
-    console.error("Erro ao criar imagem:", error);
-    return res.status(500).json({ error: "Erro interno do servidor" });
+    next(error);
   }
 };
 
-const confirmMeasure = async (req: Request, res: Response) => {
+const confirmMeasure = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
   try {
-    const { measure_uuid, confirmed_value } = req.body;
+    const { measure_uuid, confirmed_value }: ConfirmMeasure = req.body;
 
-    if (!measure_uuid || confirmed_value === undefined) {
-      return res.status(400).json({
-        error_code: "INVALID_DATA",
-        error_description:
-          "Dados fornecidos no corpo da requisição são inválidos.",
-      });
+    if (
+      !measure_uuid ||
+      !uuidValidate(measure_uuid) ||
+      confirmed_value === undefined
+    ) {
+      throw new InvalidData();
     }
 
-    const result = await service.confirmMeasure(measure_uuid, confirmed_value);
+    await service.confirmMeasure(measure_uuid, confirmed_value);
 
-    if (result) {
-      return res.status(200).json({ success: true });
-    } else {
-      return res.status(404).json({ error: "Medição não encontrada" });
-    }
+    return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("Erro ao confirmar medição:", error);
-    return res.status(500).json({ error: "Erro interno do servidor" });
+    next(error);
   }
 };
 
-const getMeasuresByCustomerCode = async (req: Request, res: Response) => {
+const getMeasuresByCustomerCode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
   try {
     const { customer_code } = req.params;
     const { measure_type } = req.query;
 
+    // Conversão para maiúsculas para comparação case insensitive
+    const formattedMeasureType = measure_type
+      ? (measure_type as string).toUpperCase()
+      : undefined;
+
     if (
-      measure_type &&
-      !["WATER", "GAS"].includes((measure_type as string).toUpperCase())
+      formattedMeasureType &&
+      !["WATER", "GAS"].includes(formattedMeasureType)
     ) {
-      return res.status(400).json({
-        error_code: "INVALID_TYPE",
-        error_description: "Tipo de medição não permitida",
-      });
+      throw new InvalidType();
     }
 
     const measures = await service.getMeasuresByCustomerCode(
       customer_code,
-      measure_type as string
+      formattedMeasureType
     );
 
     if (measures.length === 0) {
-      return res.status(404).json({
-        error_code: "MEASURES_NOT_FOUND",
-        error_description: "Nenhuma leitura encontrada",
-      });
+      throw new NotFound();
     }
 
     return res.status(200).json({
@@ -89,8 +95,7 @@ const getMeasuresByCustomerCode = async (req: Request, res: Response) => {
       measures,
     });
   } catch (error) {
-    console.error("Erro ao obter medições do cliente:", error);
-    return res.status(500).json({ error: "Erro interno do servidor" });
+    next(error);
   }
 };
 
