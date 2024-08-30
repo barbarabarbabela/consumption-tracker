@@ -1,6 +1,7 @@
 import express from "express";
 import router from "./routes/route";
 import { AppDataSource } from "./data-source";
+import { errorHandler } from "./errors-handler";
 
 require("dotenv").config();
 
@@ -9,6 +10,7 @@ const port = 3000;
 
 app.use(express.json());
 app.use(router);
+app.use(errorHandler);
 
 AppDataSource.initialize()
   .then(() => {
