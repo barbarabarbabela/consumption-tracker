@@ -14,7 +14,7 @@ export const errorHandler = (
 ) => {
   console.error(error.stack);
 
-  let statusCode = 500; // Default to internal server error
+  let statusCode = 500;
   let message = "An unexpected error occurred.";
 
   switch (true) {

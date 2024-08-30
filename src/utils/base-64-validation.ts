@@ -1,5 +1,5 @@
-export const isBase64 = (str: string): boolean => {
+export const validateBase64 = (str: string): boolean => {
   const base64Pattern =
-    /^data:image\/(?:png|jpeg|jpg|gif|webp);base64,[A-Za-z0-9+/=]+$/;
+    /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
   return base64Pattern.test(str);
 };
