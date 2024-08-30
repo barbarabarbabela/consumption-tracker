@@ -5,6 +5,5 @@
   "username": "${POSTGRES_USER}",
   "password": "${POSTGRES_PASSWORD}",
   "database": "${POSTGRES_NAME}",
-  "entities": ["src/entity/*.ts"],
-  "synchronize": false
+  "entities": ["src/entity/*.ts"]
 }
