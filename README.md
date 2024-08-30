@@ -39,25 +39,25 @@ PostgreSQL;
 
 1. Clone o repositório:
 
-```bash
+```sh
 git clone https://github.com/barbarabarbabela/consumption-tracker.git
 ```
 
 2. Entre na pasta do projeto:
 
-```bash
+```sh
 cd consumption-tracker
 ```
 
 3. Instale as dependências:
 
-```bash
+```sh
 npm install
 ```
 
 4. Crie um arquivo `.env` na pasta do projeto com as seguintes variáveis de ambiente:
 
-```bash
+```sh
 POSTGRES_HOST
 POSTGRES_PORT
 POSTGRES_USER
@@ -68,7 +68,7 @@ GEMINI_API_KEY
 
 5. Com o Docker Desktop instalado em seu computador, execute o comando abaixo:
 
-```bash
+```sh
 docker-compose up
 ```
 
@@ -84,41 +84,45 @@ docker-compose up
 - `image_url`: A URL da imagem enviada.
 
 ## Endpoints
-
-```json
 1. POST /upload
+   
 Request body:
+
+```sh
 {
   "image": string,
   "customer_code": string,
   "measure_datetime": datetime,
   "measure_type": water | gas
 }
+```
 Response body:
+```sh
 {
   "image_url": string,
   "measure_value": number,
   "measure_uuid": string
 }
 ```
-
-```json
 2. PATCH /confirm
+
 Request body:
+```sh
 {
   "measure_uuid": string,
   "confirmed_value": number
 }
-
+```
 Response body:
+```sh
 {
   "success": boolean
 }
 ```
-
-```json
 3. GET /:customer_code/list?measure_type=:measure_type
+   
 Response body:
+```sh
 {
   "customer_code": string,
   "measures": [
@@ -133,5 +137,3 @@ Response body:
   ]
 }
 ```
-
-## Decisões de projeto
