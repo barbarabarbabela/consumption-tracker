@@ -11,5 +11,4 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DB,
   entities: [Measures],
   synchronize: false,
-  logging: true,
 });
