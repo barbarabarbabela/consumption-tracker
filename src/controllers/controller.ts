@@ -6,6 +6,7 @@ import NotFound from "../errors/not-found";
 import InvalidType from "../errors/invalid-type";
 import { ConfirmMeasure } from "../interfaces/confirm-measure";
 import { validate as uuidValidate } from "uuid";
+import { isBase64 } from "../utils/base-64-validation";
 
 const createImage = async (
   req: Request,
@@ -19,7 +20,8 @@ const createImage = async (
       !body.image ||
       !body.customer_code ||
       !body.measure_datetime ||
-      !body.measure_type
+      !body.measure_type ||
+      !isBase64(body.image)
     ) {
       throw new InvalidData();
     }
