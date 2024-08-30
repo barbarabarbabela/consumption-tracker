@@ -1,11 +1,11 @@
 # Consumption Tracker
-
+<div style="display: inline block">
 <img src="https://www.vectorlogo.zone/logos/nodejs/nodejs-icon.svg" width="20px"/>    
 <img src="https://www.vectorlogo.zone/logos/typescriptlang/typescriptlang-icon.svg" width="20px"/>
 <img src="https://www.vectorlogo.zone/logos/docker/docker-tile.svg" width="20px"/>
 <img src="https://www.vectorlogo.zone/logos/postgresql/postgresql-icon.svg" width="20px"/>
 <img src="https://www.vectorlogo.zone/logos/expressjs/expressjs-icon.svg" width="20px"/>
-
+</div>
 ## O que é?
 
 O Consumption Tracker é um microsserviço que realiza a leitura individualizada de consumo de água e gás.
